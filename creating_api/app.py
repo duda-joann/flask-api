@@ -11,8 +11,8 @@ from database_creation.models import Artists
 app = Flask(__name__)
 api = Api(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-#app.config.update(dict(DATABASE=os.path.join(pathlib.Path(app.root_path),
-                                            # 'database_creation', 'artists.db')))
+app.config.update(dict(DATABASE=os.path.join(pathlib.Path(app.root_path),
+                                        'database_creation', 'artists.db')))
 PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 DATABASE = os.path.join(PROJECT_ROOT, 'database_creation', 'artists.db')
