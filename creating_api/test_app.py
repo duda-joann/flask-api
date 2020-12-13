@@ -13,3 +13,7 @@ def test_render_main():
 def test_api_artistapidata():
     result = requests.get(url + '/api/v1/artist/1')
     assert result.status_code == 200
+
+def test_api_all_artists():
+    result = requests.get(url+'def test_api')
+    assert result.status_code == 200
