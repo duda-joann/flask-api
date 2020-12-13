@@ -86,7 +86,7 @@ class ArtistIDApi(Resource):
         args = artists_update_args.parse_args()
         result = Artists.query.filter_by(id=id).first()
         if not result:
-            abort(404, message="Video doesn't exist, cannot update")
+            abort(404, message="Artist doesn't exist, cannot update")
 
         if args['name']:
             result.name = args['name']
