@@ -1,7 +1,7 @@
 import requests
 from typing import Dict
-from database_creation.create_db import db, app
-from saving_api.errors import ApiError, DatabaseSaveError
+from database_creation.create_app import db, create_app
+from .errors import ApiError, DatabaseSaveError
 from database_creation.models import Artists
 
 """
@@ -17,6 +17,7 @@ api_key (Required) : A Last.fm API key.
 # Auth
 This service does not require authentication.
 """
+
 
 class ApiCollector:
     def __init__(self, url: str, parameters: Dict) -> None:
@@ -46,6 +47,7 @@ class ApiCollector:
                     listeners=int(element['listeners']),
                     mbid=element['mbid']
                 )
+                app = create_app()
                 with app.app_context():
                     db.session.add(artist)
                     db.session.commit()

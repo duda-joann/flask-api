@@ -1,4 +1,4 @@
-from database_creation.app import db
+from .app import db
 
 
 class Artists(db.Model):

@@ -1,7 +1,7 @@
 from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 from flask import render_template
 from database_creation.models import Artists
-from database_creation.create_db import app, db
+from database_creation.create_app import app, db
 
 
 api = Api(app)
