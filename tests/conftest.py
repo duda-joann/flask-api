@@ -27,7 +27,7 @@ def create_test_db():
 
 
 @pytest.fixture
-def sample(data, db):
+def sample(app,db):
     data = {
         'id': 1,
         'name':'AC/DC',
@@ -36,6 +36,10 @@ def sample(data, db):
         'mbid': 'aaa-100-bcd-99-cde'
     }
 
-    db.session.add(data)
-    db.session.commit()
+    runner = app.test_cli_runner()
+    runner.invoke(data)
+
+
+
+    
 
