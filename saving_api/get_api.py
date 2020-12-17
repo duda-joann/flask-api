@@ -33,8 +33,10 @@ class ApiCollector:
     def get_data_from_api(self) -> Dict:
         try:
             response = requests.get(self.url, params = self.parameters)
+
             return response.json()
         except ApiError:
+
             return f'Api not available'
 
     def save_to_database(self) -> str:
@@ -51,9 +53,11 @@ class ApiCollector:
                 with app.app_context():
                     db.session.add(artist)
                     db.session.commit()
+
             return f'Record inserted successfully into Artists table'
 
         except DatabaseSaveError:
+
             return f'Data saving is not available'
 
 

@@ -11,7 +11,7 @@ def test_get_all_artists_no_record(client):
     assert response.get_json() == expected_result
 
 
-def test_get_all_artists_full(client, sample):
+def test_get_all_artists_full(client):
     response = client.get('/api/v1/artists')
     expected_result = {
         'success': True,
