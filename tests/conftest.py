@@ -6,7 +6,6 @@ from database_creation import create_app
 @pytest.fixture
 def create_test_app() -> Generator:
     app = create_app.create_app('testing')
-    create_app.create_database()
 
     yield app
 
@@ -18,13 +17,6 @@ def client(app) -> Generator:
     with app.test_client() as client:
 
         yield client
-
-
-@pytest.fixture
-def create_test_db()->Generator:
-    db = create_app.create_database()
-
-    yield db
 
 
 @pytest.fixture

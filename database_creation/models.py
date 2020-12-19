@@ -1,6 +1,8 @@
 from .app import db
 import datetime
 from flask_marshmallow import Schema, fields
+from marshmallow.validate import Length
+from werkzeug.security import generate_password_hash
 
 
 class Artists(db.Model):
@@ -33,6 +35,7 @@ class Artists(db.Model):
 
 
 class Users(db.Model):
+    " Model for user's data"
     id = db.Column(
         db.Integer,
         primary_key = True
@@ -52,19 +55,43 @@ class Users(db.Model):
             nullable=False,
             unique=True)
     creation = db.Column(
-            db.Datetime,
+            db.DateTime,
             default = datetime.datetime.now)
 
     def __repr__(self):
         return f'{self.id}, {self.username}', {self.email}, {self.password}, {self.creation}
 
+    @staticmethod
+    def generate_hashed_password(password):
+        return generate_password_hash(password)
+
+
+    def generate_jwt(self):
+        payload = {
+            'user_id': self.id,
+            'exp': datetime.datetime.now() + datetime.timedelta(minutes=30)
+        }
+        return payload.encode()
 
 class UserSchema(Schema):
-    id = fields.Integer(dump_only=True)
-    username = fields.String(required=True)
-    password = fields.String(required=True)
-    creation = fields.Datetime('%y %m %d', required = True, dump_only=True)
+    id = fields.Integer(
+            dump_only=True,
+    )
+    username = fields.String(
+            required=True,
+            validate=Length(min=5, max=255)
+    )
+    password = fields.String(
+            required=True,
+            validate=Length(min=8, max=255)
+    )
+    creation = fields.DateTime(
+            '%y %m %d',
+            required = True,
+            dump_only=True
+    )
 
 
 user_schema = UserSchema()
+
 

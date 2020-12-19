@@ -2,6 +2,7 @@ from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 from flask import render_template
 from database_creation.models import Artists
 from database_creation.create_app import create_app, db
+from creating_api.authorization.auth import User_Registration
 
 app = create_app()
 api = Api(app)
@@ -14,11 +15,11 @@ artists_put_args.add_argument("listeners", type=int, help="Amount of the listene
 artists_put_args.add_argument("mbid", type=str, help="MBID number", required=True)
 
 artists_update_args = reqparse.RequestParser()
-artists_put_args.add_argument("id", type=int, help="Artist ID", required=True)
+artists_update_args.add_argument("id", type=int, help="Artist ID", required=True)
 artists_update_args.add_argument("name", type=str, help="Name of the artist is required", required=True)
 artists_update_args.add_argument("playcount", type=str, help="Amount of the listenings")
 artists_update_args.add_argument("likes", type=int, help="Likes on the video")
-artists_put_args.add_argument("mbid", type=str, help="MBID number")
+artists_update_args.add_argument("mbid", type=str, help="MBID number")
 
 resource_fields = {
     'id': fields.Integer,
@@ -104,6 +105,8 @@ class ArtistIDApi(Resource):
 
 api.add_resource(ArtistIDApi, "/api/v1/artist/<int:id>")
 api.add_resource(ArtistAllResult, "/api/v1/artists")
+api.add_resource(User_Registration, "/api/v1/register")
+
 
 if __name__ == '__main__':
     app.config["DEBUG"] = True
