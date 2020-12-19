@@ -3,7 +3,7 @@ import datetime
 from flask_marshmallow import Schema, fields
 from marshmallow.validate import Length
 from werkzeug.security import generate_password_hash
-
+from creating_api.authorization.auth import ma
 
 class Artists(db.Model):
     """Data model for artists data"""
@@ -35,7 +35,7 @@ class Artists(db.Model):
 
 
 class Users(db.Model):
-    " Model for user's data"
+    """Model for user's data"""
     id = db.Column(
         db.Integer,
         primary_key = True
@@ -73,7 +73,7 @@ class Users(db.Model):
         }
         return payload.encode()
 
-class UserSchema(Schema):
+class UserSchema(ma.Schema):
     id = fields.Integer(
             dump_only=True,
     )
@@ -90,7 +90,6 @@ class UserSchema(Schema):
             required = True,
             dump_only=True
     )
-
 
 user_schema = UserSchema()
 

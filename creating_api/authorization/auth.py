@@ -1,35 +1,38 @@
 from flask_restful import abort
 from flask import abort, jsonify
+from flask_marshmallow import Marshmallow
 from webargs.flaskparser import use_args
 from database_creation.models import Users, user_schema
 from database_creation.app import db
 from .blueprint import auth_bp
+from creating_api.app import app
 
+ma = Marshmallow(app)
 
 @auth_bp.route('register, methods ='['POST'])
 @use_args(user_schema, error_status_code = 400)
 def register(args: dict) -> dict:
-        """
-        creating/register new user
-        :param args:  parameters provide by user
-        :return:  return Dict
-         """
-
-        if Users.query.filter(Users.username ==args['username']).first():
+    """
+    creating/register new user
+    :param args:  parameters provide by user
+    :return:  return Dict
+    """
+    if Users.query.filter(Users.username ==args['username']).first():
             abort(409, description=f'User with username {args["username"]} existst.')
 
-        if Users.query.filter(Users.email ==args['email']).first():
+    if Users.query.filter(Users.email ==args['email']).first():
             abort(409, description=f'Mail {args["email"]} exists.')
 
-        args['password'] = Users.generate_hashed_password('password')
+    args['password'] = Users.generate_hashed_password('password')
 
-        user = Users(**args)
-        db.session.add(user)
-        db.session.commit()
+    user = Users(**args)
+    db.session.add(user)
+    db.session.commit()
 
-        token = user.generate_jwt().decode()
+    token = user.generate_jwt().decode()
 
-        return jsonify(token)
+    return jsonify({'succes': 'True',
+                    'token': token}), 201
 
 
 @auth_bp.route('/login', methods=['POST'])
@@ -49,7 +52,7 @@ def login(args: dict) -> dict:
 
     token = user.generate_jwt()
 
-    return jsonify(token)
+    return jsonify(token), 201
 
 
 @auth_bp.route('/get-active-user', methods=['GET'])
