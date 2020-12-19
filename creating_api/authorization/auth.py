@@ -31,7 +31,7 @@ def register(args: dict) -> dict:
 
     token = user.generate_jwt().decode()
 
-    return jsonify({'succes': 'True',
+    return jsonify({'success': 'True',
                     'token': token}), 201
 
 
