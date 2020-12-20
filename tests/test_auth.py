@@ -62,7 +62,38 @@ def test_login_register_user(client):
     assert response_data['sucess'] is True
     assert response_data['token']
 
+def test_login_nonexistent_user(client):
+    response = client.post('/api/v1/auth/login',
+                           json={
+                               'username': 'notest',
+                               'password': 'test12',
+                           })
+    response_data = response.get_json()
+    assert response.status_code == 409
+    assert response.headers == 'application/json'
+    assert response_data['sucess'] is None
+    assert 'token' not in response_data
+
+def test_login_with_incorrect_password(client):
+    response = client.post('/api/v1/auth/login',
+                           json={
+                               'username': 'test',
+                               'password': 'testelllo',
+                           })
+    response_data = response.get_json()
+    assert response.status_code == 409
+    assert response.headers == 'application/json'
+    assert response_data['sucess'] is None
+    assert 'token' not in response_data
 
 
-def test_login_non_existent_user(client):
-    pass
+def test_get_current_user(client, user, token):
+    response = client.get('api/v1/auth/get-active-user', token)
+    response_data = response.get_json()
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+    assert response_data['sucess'] is True
+    assert response_data['data']['username']== user['username']
+    assert response_data['data']['email'] == user['email']
+
+
