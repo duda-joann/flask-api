@@ -2,7 +2,7 @@ import pytest
 
 
 def test_register_user(client):
-    response = client.post('/api/v1auth/register',
+    response = client.post('/api/v1/auth/register',
                            json ={
                                'username':'test',
                                 'password': '123456',
@@ -24,7 +24,7 @@ def test_register_user(client):
     ]
         )
 def test_registration_invalid_data(client, data, missing_field):
-    response = client.post('/api/v1auth/register',
+    response = client.post('/api/v1/auth/register',
                            json=data)
     response_data = response.get_json()
     assert response.status_code == 400
@@ -34,4 +34,35 @@ def test_registration_invalid_data(client, data, missing_field):
     assert missing_field in response_data
 
 
+@pytest.mark.paramatrize(
+    'data', 'repeated_name',
+    [({'username':'test', 'password': '124525', 'email':'testy@gmail.com'}, 'username'),
+     ({'username': 'ozzy', 'password': 'sabbathbloodysabbath', 'email: test@gmail.com'}),
+     ])
+def test_registration_not_available_email_or_username(client, data, missing_field):
+    response = client.post('/api/v1/auth/register',
+                           json=data)
+    response_data = response.get_json()
+    assert response.status_code == 400
+    assert response.headers['Content-Type'] == 'application/json'
+    assert response_data['sucess'] is False
+    assert 'token' not in response_data
+    assert missing_field in response_data
 
+
+def test_login_register_user(client):
+    response = client.post('/api/v1/auth/login',
+                           json ={
+                               'username':'test',
+                                'password': 'test12',
+                           })
+    response_data = response.get_json()
+    assert response.status_code == 201
+    assert response.headers =='application/json'
+    assert response_data['sucess'] is True
+    assert response_data['token']
+
+
+
+def test_login_non_existent_user(client):
+    pass

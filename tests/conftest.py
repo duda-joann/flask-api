@@ -1,6 +1,7 @@
 import pytest
 from typing import Generator
 from database_creation import create_app
+from database_creation.models import Users
 
 
 @pytest.fixture
@@ -20,7 +21,7 @@ def client(app) -> Generator:
 
 
 @pytest.fixture
-def sample(app,db):
+def sample(app):
     data = {
         'id': 1,
         'name':'AC/DC',
@@ -32,7 +33,16 @@ def sample(app,db):
     runner = app.test_cli_runner()
     runner.invoke(data)
 
+@pytest.fixture
+def user(client):
+    user = {
+        'username': 'test',
+        'password': 'test12',
+        'email': 'test@gmail.com'
+    }
 
+    client.post('/api/v1/auth/register', json=user)
+    return user
 
     
 
