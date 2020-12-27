@@ -1,6 +1,7 @@
 import pytest
 
 
+
 def test_register_user(client):
     response = client.post('/api/v1/auth/register',
                            json ={
@@ -36,9 +37,11 @@ def test_registration_invalid_data(client, data, missing_field):
 
 @pytest.mark.paramatrize(
     'data', 'repeated_name',
-    [({'username':'test', 'password': '124525', 'email':'testy@gmail.com'}, 'username'),
-     ({'username': 'ozzy', 'password': 'sabbathbloodysabbath', 'email: test@gmail.com'}),
-     ])
+    [
+        ({'username':'test', 'password': '124525', 'email':'testy@gmail.com'}, 'username'),
+        ({'username': 'ozzy', 'password': 'sabbathbloodysabbath', 'email': 'test@gmail.com'}, 'email'),
+     ]
+)
 def test_registration_not_available_email_or_username(client, data, missing_field):
     response = client.post('/api/v1/auth/register',
                            json=data)
@@ -92,8 +95,6 @@ def test_get_current_user(client, user, token):
     response_data = response.get_json()
     assert response.status_code == 200
     assert response.headers['Content-Type'] == 'application/json'
-    assert response_data['sucess'] is True
-    assert response_data['data']['username']== user['username']
+    assert response_data['success'] is True
+    assert response_data['data']['username'] == user['username']
     assert response_data['data']['email'] == user['email']
-
-

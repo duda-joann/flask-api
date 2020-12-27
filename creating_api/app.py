@@ -2,7 +2,7 @@ from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 from flask import render_template
 from database_creation.models import Artists
 from database_creation.create_app import create_app, db
-from creating_api.authorization.auth import User_Registration
+from .helpers import token_required
 
 app = create_app()
 api = Api(app)
@@ -38,6 +38,7 @@ def render_main():
 
 class ArtistAllResult(Resource):
     @marshal_with(resource_fields)
+    @token_required
     def get(self):
         result = Artists.query.all()
         if not result:
@@ -47,6 +48,7 @@ class ArtistAllResult(Resource):
 
 class ArtistIDApi(Resource):
     @marshal_with(resource_fields)
+    @token_required
     def get(self, id):
         result = Artists.query.filter_by(id=id).first()
         if not result:
@@ -54,6 +56,7 @@ class ArtistIDApi(Resource):
         return result
 
     @marshal_with(resource_fields)
+    @token_required
     def put(self, id):
         args = artists_put_args.parse_args()
         result = Artists.query.filter_by(id=id).first()
@@ -72,6 +75,7 @@ class ArtistIDApi(Resource):
         return artist, 201
 
     @marshal_with(resource_fields)
+    @token_required
     def delete(self, id):
         query = Artists.delete(id=id)
         if query:
@@ -83,6 +87,7 @@ class ArtistIDApi(Resource):
         return f'', 204
 
     @marshal_with(resource_fields)
+    @token_required
     def patch(self, id):
         args = artists_update_args.parse_args()
         result = Artists.query.filter_by(id=id).first()
@@ -105,7 +110,6 @@ class ArtistIDApi(Resource):
 
 api.add_resource(ArtistIDApi, "/api/v1/artist/<int:id>")
 api.add_resource(ArtistAllResult, "/api/v1/artists")
-api.add_resource(User_Registration, "/api/v1/register")
 
 
 if __name__ == '__main__':
