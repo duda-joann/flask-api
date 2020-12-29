@@ -3,7 +3,7 @@ from typing import Callable
 from flask import request, abort
 
 
-def token_required(function: Callable)-> Callable:
+def token_required(function: Callable):
 
     """
     check if user got  required token,
@@ -15,6 +15,9 @@ def token_required(function: Callable)-> Callable:
         auth = request.headers.get('Authorization')
         if auth:
             token = auth.split('')[1]
+
+        if token:
+            return function(*args, **kwargs)
         else:
             abort(401, description = 'Missing token. Please login or register to get required token')
 

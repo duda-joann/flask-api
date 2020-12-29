@@ -65,6 +65,7 @@ def test_login_register_user(client):
     assert response_data['sucess'] is True
     assert response_data['token']
 
+
 def test_login_nonexistent_user(client):
     response = client.post('/api/v1/auth/login',
                            json={
